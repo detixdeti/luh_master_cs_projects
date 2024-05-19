@@ -486,7 +486,22 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    """
+    As heuristic the manhattan distance to the furthest uneaten food based on the
+    current state. It is admissible because it is the minimum path cost the agent 
+    has to take to the furthest food when there are no walls.
+    """
+
+    if problem.isGoalState(state):
+        return 0
+
+    foodposition = foodGrid.asList()
+    max_distance = float("-inf")
+    for food_pos in foodposition:
+        current_distance = util.manhattanDistance(position, food_pos)
+        if current_distance > max_distance:
+            max_distance = current_distance
+    return max_distance
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
