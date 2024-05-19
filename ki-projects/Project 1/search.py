@@ -18,7 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
-from util import*
+from util import *
 
 class SearchProblem:
     """
@@ -148,7 +148,38 @@ def breadthFirstSearch(problem: SearchProblem):
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    start_state = problem.getStartState()
+    path_to_goal = []
+
+    # Use a PriorityQueue to manage the frontier
+    frontier = PriorityQueue()
+    frontier.push((start_state, path_to_goal), 0)
+    visited_states = set()
+
+    while not frontier.isEmpty():
+        # Get the last state and path from the PriorityQueue
+        current_state, current_path = frontier.pop()
+
+        # If this state is the goal, return the path
+        if problem.isGoalState(current_state):
+            return current_path
+
+        if current_state not in visited_states:
+            # Mark this state as visited
+            visited_states.add(current_state)
+
+            # Add the successors of this state to the PriorityQueue
+            for successor, action, cost in problem.getSuccessors(current_state):
+                # Check if successor already in frontier and if cost can be updated
+                # frontier.update does nothing if new cost is more expensive
+                frontier.update(
+                    (successor, current_path + [action]),
+                    problem.getCostOfActions(current_path) + cost,
+                )
+
+    # If no solution was found, return an empty path
+    return []
+
 
 def nullHeuristic(state, problem=None):
     """
